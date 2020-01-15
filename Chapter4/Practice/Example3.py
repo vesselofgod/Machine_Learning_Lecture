@@ -34,6 +34,8 @@ def show_data2(x,t):
         plt.grid(True)
 
 def logistic3(x0,x1,w):
+    #3개의 class를 구분해내기 위한 logistic regression model
+    #*행렬연산을 수행함.
     K=3
     w=w.reshape((3,3))
     n=len(x1)
@@ -42,6 +44,7 @@ def logistic3(x0,x1,w):
     return y
 
 def cee_logistic3(w,x,t):
+    #교차 엔트로피 오차를 구하는 함수.
     X_n=x.shape[0]
     y=logistic3(x[:,0], x[:,1],w)
     cee = 0
@@ -50,6 +53,7 @@ def cee_logistic3(w,x,t):
     return cee
 
 def dcee_logistic3(w,x,t):
+    #교차 엔트로피 오차를 미분하여 오차를 최소화하게끔 해주는 함수
     X_n=x.shape[0]
     y=logistic3(x[:,0],x[:,1],w)
     dcee = np.zeros((3,3))
