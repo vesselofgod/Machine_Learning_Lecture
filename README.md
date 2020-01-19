@@ -1,5 +1,5 @@
 # Unitsoft Machine Learning Lecture Note
-<img src="https://img.shields.io/badge/data-(Csv,Img)-orange.svg" />
+<img src="https://img.shields.io/badge/Dataset Type -(Csv,Img)-orange.svg" />
 
 ## Instructor
 > * [vesselofgod](https://github.com/vesselofgod)
