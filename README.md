@@ -3,12 +3,14 @@
 > * [vesselofgod](https://github.com/vesselofgod)
 
 * ## Lecture note index
-  * Lecture 1 (intro and basic modules)
+  * Lecture 1 (Course intro and basic modules for ML)
   * Lecture 2 (Linear algebra and partial differential)
   * Lecture 3 (Linear regression, general regression)
   * Lecture 4 (Classification)
+  * Lecture 5 (Perceptron and Back Propagation)
+  * Lecture 6 (Network Implementation and Convolution Neural Network(CNN))
+  * Lecture 7 (Unsupervised Learning)
   ...
-  
   
 * ## reference by
   * [Sung Kim](http://hunkim.github.io/ml/)
