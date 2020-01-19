@@ -1,5 +1,6 @@
 # Unitsoft Machine Learning Lecture Note
-<img src="https://img.shields.io/badge/Dataset Type -(Csv,Img)-orange.svg" />
+<img src="https://img.shields.io/badge/Dataset Type -(Csv,Img)-orange.svg" /> <img src=https://img.shields.io/github/commit-activity/y/vesselofgod/Machine_Learning_Lecture.svg /> <img src=https://img.shields.io/github/repo-size/vesselofgod/Machine_Learning_Lecture.svg /> 
+<img src=https://img.shields.io/maintenance/Yes/2020.svg />
 
 ## Instructor
 > * [vesselofgod](https://github.com/vesselofgod)
