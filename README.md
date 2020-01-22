@@ -17,7 +17,7 @@
 * ## Lecture note index
 
 * ## reference by
-  * [Sung Kim](http://hunkim.github.io/ml/)
+  * Sung kim
   * Yonsei univ 2019 fall semester EEE3314-01 (Instructor : Andrew Beng Jin TEOH) Lecture note
   * 2018 NC Soft fellowship Lecture note
   * 파이썬으로 배우는 머신러닝의 교과서 (MAKOTO ITO)
