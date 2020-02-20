@@ -137,20 +137,25 @@ class Model(object):
     def __str__(self):
         return '{}/{}'.format(self.name, self.dataset)
 
+
     def exec_all(self, epoch_count=10, batch_size=10, learning_rate=0.001,
                  report=0, show_cnt=3):
+        #학습, 평가, 시각화를 차례대로 실행시킴.
         self.train(epoch_count, batch_size, learning_rate, report)
         self.test()
         if show_cnt > 0: self.visualize(show_cnt)
 
 
 class MlpModel(Model):
+    #사실 메소드로 구성하려면 MLP 모델의 코드가 상당히 복잡해짐.
+    #그래서 외부함수로 짜서 가독성 높임
     def __init__(self, name, dataset, hconfigs):
         super(MlpModel, self).__init__(name, dataset)
         self.init_parameters(hconfigs)
 
 
 def mlp_init_parameters(self, hconfigs):
+    #mlp 모델의 파라미터를 초기화시켜주는 함수
     self.hconfigs = hconfigs
     self.pm_hiddens = []
 
@@ -174,6 +179,7 @@ def mlp_alloc_layer_param(self, input_shape, hconfig):
 
 
 def mlp_alloc_param_pair(self, shape):
+    #가중치와 상수의 쌍을 반환해줌.
     weight = np.random.normal(0, self.rand_std, shape)
     bias = np.zeros([shape[-1]])
     return weight, bias
@@ -186,6 +192,7 @@ MlpModel.alloc_param_pair = mlp_alloc_param_pair
 
 def mlp_model_train(self, epoch_count=10, batch_size=10, \
                     learning_rate=0.001, report=0):
+    #모델의 학습과정
     self.learning_rate = learning_rate
 
     batch_count = int(self.dataset.train_count / batch_size)
@@ -219,6 +226,7 @@ MlpModel.train = mlp_model_train
 
 
 def mlp_model_test(self):
+    #모델의 평가과정
     teX, teY = self.dataset.get_test_data()
     time1 = int(time.time())
     acc = self.eval_accuracy(teX, teY)
@@ -230,6 +238,8 @@ MlpModel.test = mlp_model_test
 
 
 def mlp_model_visualize(self, num):
+    #모델의 시각화
+    #사진 띄워준다음에 옳은 결과가 나왔는지 확인해주는 함수
     print('Model {} Visualization'.format(self.name))
     deX, deY = self.dataset.get_visualize_data(num)
     est = self.get_estimate(deX)
@@ -240,6 +250,7 @@ MlpModel.visualize = mlp_model_visualize
 
 
 def mlp_train_step(self, x, y):
+    #미니배치 단위로 수행되는 한 단계의 학습과정을 주관하는 함수
     self.is_training = True
 
     output, aux_nn = self.forward_neuralnet(x)
@@ -259,6 +270,9 @@ MlpModel.train_step = mlp_train_step
 
 
 def mlp_forward_neuralnet(self, x):
+    '''
+    학습망의 순전파처리를 담당하는 함수
+    '''
     hidden = x
     aux_layers = []
 
@@ -272,6 +286,9 @@ def mlp_forward_neuralnet(self, x):
 
 
 def mlp_backprop_neuralnet(self, G_output, aux):
+    '''
+    학습망의 역전파처리를 담당하는 함수
+    '''
     aux_out, aux_layers = aux
 
     G_hidden = self.backprop_layer(G_output, None, self.pm_output, aux_out)
@@ -288,12 +305,18 @@ MlpModel.backprop_neuralnet = mlp_backprop_neuralnet
 
 
 def mlp_forward_layer(self, x, hconfig, pm):
+    '''
+    계층 하나에 대한 forward 처리
+    '''
     y = np.matmul(x, pm['w']) + pm['b']
     if hconfig is not None: y = relu(y)
     return y, [x, y]
 
 
 def mlp_backprop_layer(self, G_y, hconfig, pm, aux):
+    '''
+    계층 하나에 대한 backward 처리
+    '''
     x, y = aux
 
     if hconfig is not None: G_y = relu_derv(y) * G_y
@@ -316,6 +339,10 @@ MlpModel.backprop_layer = mlp_backprop_layer
 
 
 def mlp_forward_postproc(self, output, y):
+    '''
+    신경망 출력으로부터 손실함수값을 구하여 호출
+    손실함수 계산은 푸는 문제에 따라서 달라짐.
+    '''
     loss, aux_loss = self.dataset.forward_postproc(output, y)
     extra, aux_extra = self.forward_extra_cost(y)
     return loss + extra, [aux_loss, aux_extra]
@@ -330,6 +357,9 @@ MlpModel.forward_extra_cost = mlp_forward_extra_cost
 
 
 def mlp_backprop_postproc(self, G_loss, aux):
+    '''
+    후처리에서의 역전파과정을 수행함
+    '''
     aux_loss, aux_extra = aux
     self.backprop_extra_cost(G_loss, aux_extra)
     G_output = self.dataset.backprop_postproc(G_loss, aux_loss)
@@ -345,6 +375,9 @@ MlpModel.backprop_extra_cost = mlp_backprop_extra_cost
 
 
 def mlp_eval_accuracy(self, x, y, output=None):
+    '''
+    정확도를 계산하는 함수
+    '''
     if output is None:
         output, _ = self.forward_neuralnet(x)
     accuracy = self.dataset.eval_accuracy(x, y, output)
@@ -366,6 +399,7 @@ MlpModel.get_estimate = mlp_get_estimate
 # dataset_flowers
 
 class Dataset(object):
+    #앞으로 선언할 데이터셋의 기반 클래스
     def __init__(self, name, mode):
         self.name = name
         self.mode = mode
@@ -380,6 +414,9 @@ class Dataset(object):
 
 
 def dataset_get_train_data(self, batch_size, nth):
+    '''
+    학습데이터를 반환해주는 함수
+    '''
     from_idx = nth * batch_size
     to_idx = (nth + 1) * batch_size
 
@@ -399,6 +436,9 @@ Dataset.shuffle_train_data = dataset_shuffle_train_data
 
 
 def dataset_get_test_data(self):
+    '''
+    평가데이터를 반환해주는 함수
+    '''
     return self.te_xs, self.te_ys
 
 
@@ -406,6 +446,9 @@ Dataset.get_test_data = dataset_get_test_data
 
 
 def dataset_get_validate_data(self, count):
+    '''
+    검증데이터를 반환해주는 함수
+    '''
     self.va_indices = np.arange(len(self.va_xs))
     np.random.shuffle(self.va_indices)
 
@@ -420,6 +463,9 @@ Dataset.get_visualize_data = dataset_get_validate_data
 
 
 def dataset_shuffle_data(self, xs, ys, tr_ratio=0.8, va_ratio=0.05):
+    '''
+    데이터셋을 뒤섞어주는 역할을 하는 함수
+    '''
     data_count = len(xs)
 
     tr_cnt = int(data_count * tr_ratio / 10) * 10
