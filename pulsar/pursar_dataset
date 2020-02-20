@@ -1,0 +1,20 @@
+class PulsarDataset(Dataset):
+    def __init__(self):
+        super(PulsarDataset, self).__init__('pulsar', 'binary')
+
+        rows, _ = load_csv('pulsar_stars.csv')
+
+        data = np.asarray(rows, dtype='float32')
+        self.shuffle_data(data[:, :-1], data[:, -1:], 0.8)
+        self.target_names = ['별', '펄서']
+
+    def visualize(self, xs, estimates, answers):
+        for n in range(len(xs)):
+            x, est, ans = xs[n], estimates[n], answers[n]
+            xstr = vector_to_str(x, '%5.1f', 3)
+            estr = self.target_names[int(round(est[0]))]
+            astr = self.target_names[int(round(ans[0]))]
+            rstr = 'O'
+            if estr != astr: rstr = 'X'
+            print('{} => 추정 {}(확률 {:4.2f}) : 정답 {} => {}'. \
+                  format(xstr, estr, est[0], astr, rstr))
