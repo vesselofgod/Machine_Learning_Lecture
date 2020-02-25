@@ -1117,11 +1117,37 @@ def cnn_basic_visualize(self, num):
 CnnBasicModel.visualize = cnn_basic_visualize
 
 #main
-fd = FlowersDataset()
-fm = MlpModel('flowers_model_1', fd, [10])
-fm.exec_all(epoch_count=10, report=2)
+fd = FlowersDataset([96, 96], [96, 96, 3])
+
+'''
+# 다층 퍼셉트론 처리
+fm1 = CnnBasicModel('flowers_model_1', fd, [30, 10])
+fm1.exec_all(epoch_count = 10, report = 2)
+
+#완전연결계층의 은닉 계층 구성
+fm2 = CnnBasicModel('flowers_model_2', fd, 
+                    [['full', {'width':30}], 
+                     ['full', {'width':10}]])
+fm2.use_adam = False
+fm2.exec_all(epoch_count = 10, report = 2)
 
 
+#CNN 기반 이미지처리
+fm3 = CnnBasicModel('flowers_model_3', fd, 
+               [['conv', {'ksize':5, 'chn':6}], 
+                ['max', {'stride':4}], 
+                ['conv', {'ksize':3, 'chn':12}], 
+                ['avg', {'stride':2}]], 
+               True)
+fm3.exec_all(epoch_count = 10, report = 2)
 
-
-
+#더 많은 계층을 갖는 합성곱신경망
+fm4 = CnnBasicModel('flowers_model_4', fd, 
+               [['conv', {'ksize':3, 'chn':6}], 
+                ['max', {'stride':2}], 
+                ['conv', {'ksize':3, 'chn':12}], 
+                ['max', {'stride':2}], 
+                ['conv', {'ksize':3, 'chn':24}], 
+                ['avg', {'stride':3}]])
+fm4.exec_all(epoch_count = 10, report = 2)
+'''
